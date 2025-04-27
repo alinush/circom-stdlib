@@ -17,11 +17,11 @@ Install `circom` v2.2.2:
 ./scripts/install-circom.sh
 ```
 
-## Make sure everything compiles
+## Tests
 
-You can run the following command in this directory:
 ```
-./scripts/test-compilation.sh
+npm install
+npm test
 ```
 
 ### Git hook
@@ -30,7 +30,7 @@ There is also a git hook that auto-tests compilation works upon a git commit.
 To install it:
 
 ```
-cp git-hooks/test-compilation .git/hooks/pre-commit
+cp git-hooks/run-tests .git/hooks/pre-commit
 ```
 
 ## Is this a replacement for `circomlib`?

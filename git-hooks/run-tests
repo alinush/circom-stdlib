@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Check if any .circom files in 'circuit/templates' changed
+if git diff --cached --name-only | grep -q '^.*\.circom$'; then
+    echo "Detected changes in *.circom files!"
+    echo
+    echo "Running circom tests (via circom_tester)..."
+
+    npm test
+
+    if [ $? -ne 0 ]; then
+        echo "Error: circom tests failed. Commit aborted."
+        exit 1
+    fi
+    
+    scripts/test-functions.sh
+
+    if [ $? -ne 0 ]; then
+        echo "Error: circom tests failed. Commit aborted."
+        exit 1
+    fi
+
+    echo "circom tests succeeded."
+fi
+
+exit 0
