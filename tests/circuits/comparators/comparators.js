@@ -31,6 +31,32 @@ describe("comparators test", function ()  {
         }
     });
 
+    it("LessThan_2 tests", async() => {
+        const circuit = await wasm_tester(
+            path.join(__dirname, "LessThan_2.circom"),
+            { 
+                "include": [ path.join(__dirname, "../../../src/circuits/") ],
+            },
+        );
+
+        async function assertLessThan(i, j, isLessThan) {
+            console.log("LessThan(", i, ",", j, ")");
+
+            let witness = await circuit.calculateWitness({ "lhs": i, "rhs": j }, true);
+            await circuit.checkConstraints(witness);
+            await circuit.assertOut(witness, { out: isLessThan });
+        }
+
+        for(var i = 0; i < 4; i++) {
+            await assertLessThan(i, i, 0);
+
+            for(var j = i+1; j < 4; j++) {
+                await assertLessThan(i, j, 1);
+                await assertLessThan(j, i, 0);
+            }
+        }
+    });
+
     it("IsEqual tests", async() => {
         const circuit = await wasm_tester(
             path.join(__dirname, "IsEqual.circom"),

@@ -5,12 +5,12 @@ include "bits/IsBinaryTagged.circom";
 include "comparators/LessThan.circom";
 
 template LessThan_tagger(N) {
-    signal input lhs_unbound, rhs_unbound;
+    signal input lhs, rhs;
 
-    signal lhs <== EnforceMaxBits(N)(lhs_unbound);
-    signal rhs <== EnforceMaxBits(N)(rhs_unbound);
+    signal lhs_tagged <== EnforceMaxBits(N)(lhs);
+    signal rhs_tagged <== EnforceMaxBits(N)(rhs);
 
-    signal output out <== LessThan()(lhs, rhs);
+    signal output out <== LessThan()(lhs_tagged, rhs_tagged);
     
     IsBinaryTagged()(out);
 }

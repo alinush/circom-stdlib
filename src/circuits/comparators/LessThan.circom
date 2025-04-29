@@ -40,25 +40,29 @@ template LessThan() {
     //                               <= (2^L - 1) + 2^L - 0 <= 2^{L+1} - 1
     // e.g., for L = 3
     //  lhs   = 100
+    //        >
     //  rhs   = 001
     //  m     = lhs + 1 << L - rhs
     //        = 100 + 1000   - 001
     //        = 1100 - 001
     //        = 1011
+    //        = *___
     //
     // e.g., flipping over
     //  lhs   = 001
+    //        <
     //  rhs   = 100
     //  m     = lhs + 1 << L - rhs
     //        = 001 + 1000   - 100
     //        = 1001 - 100
     //        = 0101
+    //        = *___
     signal {binary} bits[L + 1] <== Num2Bits(L + 1)(lhs + (1 << L) - rhs);
 
-    // if lhs >= rhs, then:
-    //   bits[L], the L'th bit toggled above by adding 2^L, remains 1 => assign 0 to `out`
+    // if lhs < rhs, then:
+    //   bits[L], the L'th bit toggled above by adding 2^L, becomes 0 => assign 1 to `out`
     // else:
-    //   bits[L] turns into 0 => assign 1 to `out`
+    //   bits[L], the L'th bit toggled above by adding 2^L, remains 1 => assign 0 to `out`
     //
     signal output {binary} out <== 1 - bits[L];
 
