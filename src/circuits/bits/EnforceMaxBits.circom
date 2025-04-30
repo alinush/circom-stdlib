@@ -12,7 +12,9 @@ include "../functions/utils.circom";
  * @output  out {maxbits}   the same value tagged with maxbits = N if in < 2^N
  *
  * @postconditions
- *   $in < 2^N \wedge out.maxbits = N$
+ *   in < 2^N
+ *   out == in
+ *   out.maxbits <-- N
  */
 template EnforceMaxBits(N) {
     signal input in;
