@@ -46,6 +46,8 @@ Would take a while, but should be worth it to remove `circomlib` as a dependency
 
 ## TODO
 
+ - [ ] Next things to add from circomlib
+    + `EscalarProduct` -> `InnerProduct` (or `DotProduct`)
  - [ ] Import `circom_tester` tests for `circomlib` and modify them to work with tags.
  - [ ] Automate compilation testing of templates w/o manually writing wrappers and instantiating templates for diff. parameters
     + [`circomkit`](https://github.com/erhant/circomkit) could help but does not handle tags yet
