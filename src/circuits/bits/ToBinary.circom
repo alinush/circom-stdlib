@@ -21,7 +21,7 @@ include "../functions/utils.circom";
  * @postconditions
  *   $out = in \wedge in \in \{0,1\}$
  */
-template EnforceBinary() {
+template ToBinary() {
     signal input in;
 
     (1 - in) * in === 0;
