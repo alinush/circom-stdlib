@@ -4,7 +4,8 @@
 pragma circom 2.2.2;
 
 include "../bits/Num2Bits.circom";
-include "../../functions/utils.circom";
+include "../../functions/max_signed.circom";
+include "../../functions/assert_bits_fit_scalar.circom";
 
 /**
  * Outputs a truth bit for whether lhs < rhs when viewed as N-bit

@@ -1,2 +1,3 @@
 *.r1cs
+.DS_Store
 /node_modules

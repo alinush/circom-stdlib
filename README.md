@@ -19,9 +19,22 @@ Install `circom` v2.2.2:
 
 ## Tests
 
+To run tests:
+
 ```
 npm install
 npm test
+```
+
+To filter by test names:
+```
+npm test -- g "your_test_name"
+```
+
+## Install
+
+```
+npm install -g
 ```
 
 ### Git hook

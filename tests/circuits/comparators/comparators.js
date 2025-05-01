@@ -16,10 +16,11 @@ describe("comparators test", function ()  {
     it("compilation tests", async() => {
         let files = [
             "GreaterThan_252.circom",
-            "LessThan_252.circom", 
-            "LessEqThan_252.circom",
             "IsEqual.circom",
             "IsNotEqual.circom",
+            "LessEqThan_252.circom",
+            "LessThan_252.circom", 
+            "ToLessThanConstant_10.circom",
         ];
         for(let fileIdx in files) {
             const _ = await wasm_tester(

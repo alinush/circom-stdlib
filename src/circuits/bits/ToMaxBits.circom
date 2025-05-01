@@ -4,7 +4,7 @@
 pragma circom 2.2.2;
 
 include "Num2Bits.circom";
-include "../functions/utils.circom";
+include "../functions/assert_bits_fit_scalar.circom";
 
 /**
  * Checks that the input signal is < 2^N and if so returns a signal tagged

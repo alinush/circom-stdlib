@@ -3,8 +3,6 @@
  */
 pragma circom 2.2.2;
 
-include "../functions/utils.circom";
-
 // WARNING: Coerces the input signal into an output signal that is tagged with
 // {binary}. Should not need this.
 //template CoerceToBinary() {

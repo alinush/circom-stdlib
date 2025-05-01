@@ -1,6 +1,6 @@
 pragma circom 2.2.2;
 
-include "../functions/utils.circom";
+include "../functions/log2_floor.circom";
 
 template log2floor_test() {
     signal input in;

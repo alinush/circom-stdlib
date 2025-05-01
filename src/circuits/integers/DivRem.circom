@@ -5,7 +5,7 @@ pragma circom 2.2.2;
 
 include "../bits/ToMaxBits.circom";
 include "../comparators/LessThan.circom";
-include "../functions/utils.circom";
+include "../functions/assert_bits_fit_scalar.circom";
 
 // Divides a by b, returning a quotient q and a remainder r, as if a and
 // b are integers that "fit" in the circuit's scalar field. For this

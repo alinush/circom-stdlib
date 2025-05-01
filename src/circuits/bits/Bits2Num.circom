@@ -3,7 +3,7 @@
  */
 pragma circom 2.2.2;
 
-include "../functions/utils.circom";
+include "../functions/assert_bits_fit_scalar.circom";
 
 /**
  * Outputs the number that has the given N-bit representation.
