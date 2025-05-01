@@ -1,6 +1,6 @@
 pragma circom 2.2.2;
 
-include "../bits/EnforceMaxBits.circom";
+include "../bits/ToMaxBits.circom";
 include "../comparators/LessThan.circom";
 include "../functions/utils.circom";
 
@@ -76,12 +76,12 @@ template DivRem() {
     // We can assume b < 2^M, because it is tagged.
     // But, for the remainder r, we have to enforce it:
     // (Of course, r may is a bit smaller than M bits, because r < b)
-    _ <== EnforceMaxBits(M)(r);
+    _ <== ToMaxBits(M)(r);
 
     // Note: r, b are tagged as < 2^M
     signal valid_remainder <== LessThan()(r, b);
     valid_remainder === 1;
 
     // Check that q is bounded, otherwise we are in trouble
-    _ <== EnforceMaxBits(N)(q);
+    _ <== ToMaxBits(N)(q);
 }
