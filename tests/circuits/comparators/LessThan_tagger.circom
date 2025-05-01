@@ -1,7 +1,7 @@
 pragma circom 2.2.2;
 
 include "bits/EnforceMaxBits.circom";
-include "bits/IsBinaryTagged.circom";
+include "bits/AssertHasBinaryTag.circom";
 include "comparators/LessThan.circom";
 
 template LessThan_tagger(N) {
@@ -12,5 +12,5 @@ template LessThan_tagger(N) {
 
     signal output out <== LessThan()(lhs_tagged, rhs_tagged);
     
-    IsBinaryTagged()(out);
+    AssertHasBinaryTag()(out);
 }

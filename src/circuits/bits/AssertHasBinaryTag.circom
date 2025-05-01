@@ -1,5 +1,5 @@
 pragma circom 2.2.2;
 
-template IsBinaryTagged() {
+template AssertHasBinaryTag() {
     signal input {binary} in;
 }

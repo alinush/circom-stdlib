@@ -15,7 +15,7 @@ template LessThan_forced_tagger(N) {
 
     signal output out <== LessThan()(lhs_tagged, rhs_tagged);
     
-    IsBinaryTagged()(out);
+    AssertHasBinaryTag()(out);
 }
 
 component main { public [lhs, rhs] } = LessThan_forced_tagger(
