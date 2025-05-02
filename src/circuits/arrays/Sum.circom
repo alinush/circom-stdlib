@@ -3,7 +3,6 @@
  */
 pragma circom 2.2.2;
 
-
 // This circuit returns the sum of an array of signals.
 //
 // @param  N        the size of the array

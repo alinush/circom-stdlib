@@ -46,6 +46,23 @@ describe("comparators test", function ()  {
         await circuit.assertOut(witness, { out: 0 });
     });
 
+    // Really bad because there may be a lot of code that calls LessThan(32)(x, 2^{31})
+    it("LessThan_2to32 soundness breaks for (p-(2^31), 2^31)", async() => {
+        const circuit = await wasm_tester(
+            path.join(__dirname, "LessThan_2to32.circom"),
+            {
+                "include": [ path.join(__dirname, "../../../src/circuits/") ],
+            },
+        );
+
+        let witness = await circuit.calculateWitness({
+            "lhs": Fr.e("-2147483648"),
+            "rhs": Fr.e("2147483648")
+        }, true);
+        await circuit.checkConstraints(witness);
+        await circuit.assertOut(witness, { out: 1 });
+    });
+
     it("LessThan_2 soundness breaks for (p-2, 0)", async() => {
         const circuit = await wasm_tester(
             path.join(__dirname, "LessThan_2.circom"),

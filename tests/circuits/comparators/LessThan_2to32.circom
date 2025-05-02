@@ -7,11 +7,11 @@ template LessThan_forced_tagger() {
     signal input lhs, rhs;
 
     signal {maxbits} lhs_tagged;
-    lhs_tagged.maxbits = 2;
+    lhs_tagged.maxbits = 32;
     lhs_tagged <== lhs;
 
     signal {maxbits} rhs_tagged;
-    rhs_tagged.maxbits = 2;
+    rhs_tagged.maxbits = 32;
     rhs_tagged <== rhs;
 
     signal output out <== LessThan()(lhs_tagged, rhs_tagged);
