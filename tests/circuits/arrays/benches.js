@@ -22,12 +22,15 @@ describe("arrays benches", function ()  {
             "IndexSelector_20_notags.circom",
             "SuffixSelector_10_notags.circom",
             "SuffixSelector_20_notags.circom",
+            "PrefixSelector_10_notags.circom",
+            "PrefixSelector_20_notags.circom",
         ];
         for(let fileIdx in files) {
             const circuit = await wasm_tester(
                 path.join(__dirname, files[fileIdx]),
                 {
                     "prime": "bn128",
+                    "O": 1,
                     "include": [ path.join(__dirname, "../../../src/circuits/") ],
                 },
             );

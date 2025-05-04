@@ -10,11 +10,19 @@ include "IndexSelector.circom";
  * Returns a selector/mask that is 1 at [idx + 1, N) and zero everywhere else.
  * (Negation of PrefixSelector.)
  *
- * @param  N        the array size
+ * @param  N                     the array size
  *
- * @input  idx      the index in the array s.t. 0 <= idx <= N
+ * @input  idx {maxvalue}        the index in the array s.t. 0 <= idx <= N
  *
- * @output selector the selector mask
+ * @output selector[N] {binary}  the selector mask
+ *
+ * @preconditions
+ *    idx <= N  (via idx.maxvalue <= N)
+ *    (Note: different than in IndexSelector, where idx < N)
+ *
+ * @postconditions
+ *    the first `idx` bits in `selector` are 0
+ *    the bits after `idx` are all 1
  *
  * @examples
  *   SuffixSelector(4)(0)   --> 1111
