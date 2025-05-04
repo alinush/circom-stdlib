@@ -14,28 +14,6 @@ const expect = chai.expect;
 describe("arrays test", function ()  {
     this.timeout(100000);
 
-    it("constraint benches", async() => {
-        let files = [
-            "ArrayGet_10_notags.circom",
-            "ArrayGet_20_notags.circom",
-            "IndexSelector_10_notags.circom",
-            "IndexSelector_20_notags.circom",
-        ];
-        for(let fileIdx in files) {
-            const circuit = await wasm_tester(
-                path.join(__dirname, files[fileIdx]),
-                {
-                    "prime": "bn128",
-                    "include": [ path.join(__dirname, "../../../src/circuits/") ],
-                },
-            );
-            
-            await circuit.loadConstraints();
-            // console.log("%s: %d constraints, %d vars", files[fileIdx], circuit.constraints.length, circuit.nVars);
-            // console.log();
-        }
-    });
-
     it("IndexSelector_4 in-range", async() => {
         const circuit = await wasm_tester(
             path.join(__dirname, "IndexSelector_4.circom"),

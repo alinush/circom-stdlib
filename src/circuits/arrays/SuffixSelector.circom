@@ -6,23 +6,30 @@ pragma circom 2.2.2;
 include "comparators/IsEqual.circom";
 include "IndexSelector.circom";
 
-// Returns a selector/mask that is 1 at [idx + 1, N) and zero everywhere else.
-// (Negation of PrefixSelector.)
-//
-// @param  N        the array size
-//
-// @input  idx      the index in the array s.t. 0 <= idx <= N
-//
-// @output selector the selector mask
-//
-// @examples
-//   SuffixSelector(4)(0)   --> 1111
-//   SuffixSelector(4)(1)   --> 0111
-//   SuffixSelector(4)(2)   --> 0011
-//   SuffixSelector(4)(3)   --> 0001
-//   SuffixSelector(4)(4)   --> 0000
-//   SuffixSelector(4)(idx) --> unsatisfiable, \forall idx > 4; plus, compile-time checks
-//     will prevent such a call
+/**
+ * Returns a selector/mask that is 1 at [idx + 1, N) and zero everywhere else.
+ * (Negation of PrefixSelector.)
+ *
+ * @param  N        the array size
+ *
+ * @input  idx      the index in the array s.t. 0 <= idx <= N
+ *
+ * @output selector the selector mask
+ *
+ * @examples
+ *   SuffixSelector(4)(0)   --> 1111
+ *   SuffixSelector(4)(1)   --> 0111
+ *   SuffixSelector(4)(2)   --> 0011
+ *   SuffixSelector(4)(3)   --> 0001
+ *   SuffixSelector(4)(4)   --> 0000
+ *   SuffixSelector(4)(idx) --> unsatisfiable, \forall idx > 4; plus, compile-time checks
+ *     will prevent such a call
+ *
+ * @benchmarks
+ *   SuffixSelector(N): 2*N + 4 constraints, 2*N + 5 vars
+ *   SuffixSelector_10_no_tags.circom: 24 constraints, 25 vars
+ *   SuffixSelector_20_no_tags.circom: 44 constraints, 45 vars
+ */
 template SuffixSelector(N) {
     signal input {maxvalue} idx;
     signal output {binary} selector[N];
