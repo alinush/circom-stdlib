@@ -47,9 +47,9 @@ include "../comparators/IsZero.circom";
 //      idx < MAX_LEN
 //
 // @benchmarks
-//   ArrayGet(MAX_LEN): 3*MAX_LEN + 3 vars, 2*MAX_LEN + 2 constraints
-//   ArrayGet_100.circom: 303 vars, 202 constraints
-//   ArrayGet_200.circom: 603 vars, 402 constraints
+//   ArrayGet(MAX_LEN): 2*MAX_LEN + 2 constraints, 3*MAX_LEN + 3 vars
+//   ArrayGet_10_notags.circom: 22 constraints, 33 vars
+//   ArrayGet_10_notags.circom: 42 constraints, 63 vars
 template ArrayGet(MAX_LEN) {
     signal input arr[MAX_LEN];
     signal input {maxvalue} idx;

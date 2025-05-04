@@ -29,6 +29,11 @@ pragma circom 2.2.2;
  *   IndexSelector(4)(2)   --> 0010
  *   IndexSelector(4)(3)   --> 0001
  *   IndexSelector(4)(idx) --> unsatisifiable, \forall idx >= 4
+ *
+ * @benchmarks
+ *   IndexSelector(N): N + 1 constraints, N + 2 vars
+ *   IndexSelector_10_no_tags.circom: 11 constraints, 12 vars
+ *   IndexSelector_20_no_tags.circom: 21 constraints, 22 vars
  */
 template IndexSelector(N) {
     signal input {maxvalue} idx;

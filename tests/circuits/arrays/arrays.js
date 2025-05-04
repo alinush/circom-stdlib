@@ -16,8 +16,10 @@ describe("arrays test", function ()  {
 
     it("constraint benches", async() => {
         let files = [
-            "ArrayGet_10.circom",
-            "ArrayGet_20.circom",
+            "ArrayGet_10_notags.circom",
+            "ArrayGet_20_notags.circom",
+            "IndexSelector_10_notags.circom",
+            "IndexSelector_20_notags.circom",
         ];
         for(let fileIdx in files) {
             const circuit = await wasm_tester(
