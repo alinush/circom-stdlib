@@ -16,7 +16,6 @@ include "IsZero.circom";
 template IsEqual() {
     signal input lhs;
     signal input rhs;
-    signal output {binary} out;
 
-    out <== IsZero()(lhs - rhs);
+    signal output {binary} out <== IsZero()(lhs - rhs);
 }

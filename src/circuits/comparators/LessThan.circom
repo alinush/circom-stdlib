@@ -11,20 +11,23 @@ include "../../functions/assert_bits_fit_scalar.circom";
  * Outputs a truth bit for whether lhs < rhs when viewed as N-bit
  * *unsigned* integers.
  *
- * @preconditions
  *
  * @input   lhs {maxbits}   the left-hand side input < 2^N
  * @input   rhs {maxbits}   the right-hand side input < 2^M
  *
  * @output  out {binary}    a bit indicating whether lhs < rhs when viewed as integers
  *
+ * @preconditions
+ *   lhs < 2^N
+ *   rhs < 2^M
+ *
  * @notes
  *   The old LessThan(N) template was (unfortunately) hard-coded for the scalar field
  *   of BN254, where scalars are \le (p - 1) and where 2^253 < p < 2^254.
  *
- *   The choice of N <= 252 ensures that the maximum value assigned to `bits`
- *   below is (2^N - 1) + 2^N = 2^{N+1} - 1 = 2^253 - 1, and thus does not
- *   exceed p-1.
+ *   Specifically, it was asserted that N <= 252, which ensures that the maximum
+ *   value assigned to `bits` is (2^N - 1) + 2^N = 2^{N+1} - 1 = 2^253 - 1 and
+ *   thus does not exceed p-1.
  *
  *   (If N were <= 253, then this maximum value would have been 2^254 - 1
  *    which would be larger than p-1 and would thus not fit in a signal.)
@@ -50,7 +53,7 @@ template LessThan() {
     //        = 100 + 1000   - 001
     //        = 1100 - 001
     //        = 1011
-    //        = *___
+    //        = ^___
     //
     // e.g., flipping over
     //  lhs   = 001
@@ -60,7 +63,7 @@ template LessThan() {
     //        = 001 + 1000   - 100
     //        = 1001 - 100
     //        = 0101
-    //        = *___
+    //        = ^___
     signal {binary} bits[L + 1] <== Num2Bits(L + 1)(lhs + (1 << L) - rhs);
 
     // if lhs < rhs, then:

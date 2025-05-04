@@ -7,8 +7,8 @@ include "String.circom";
 include "../arrays/Sum.circom";
 
 /**
- * Evaluates a degree-bound N polynomial at a point \tau, given the P powers of \tau
- * as auxiliary input, where P >= N.
+ * Derives a degree-bound N polynomial s(X) from a string s and evaluates it at a
+ * point \tau, given the P powers of \tau as auxiliary input, where P >= N.
  *
  * @param   N               the max length of the string
  * @param   P               the max length of the powers of tau, >= N

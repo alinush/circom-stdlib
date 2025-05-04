@@ -6,7 +6,6 @@ pragma circom 2.2.2;
 include "../../functions/min_num_bits.circom";
 include "../bits/ToMaxBits.circom";
 include "../comparators/LessThan.circom";
-include "../comparators/ToLessThanConstant.circom";
 include "arrays/SuffixSelector.circom";
 include "String.circom";
 

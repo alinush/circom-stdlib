@@ -31,5 +31,5 @@ template ToMaxBits(N) {
 
     assert(out.maxbits == N);
     assert(out == in);
-    assert(out < 2^N);
+    assert(out < 2**N);
 }

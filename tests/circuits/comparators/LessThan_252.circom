@@ -1,7 +1,7 @@
 pragma circom 2.2.2;
 
-include "LessThan_tagger.circom";
+include "LessThan_Tagger.circom";
 
-component main { public [lhs, rhs] } = LessThan_tagger(
+component main { public [lhs, rhs] } = LessThan_Tagger(
     252
 );

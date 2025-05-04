@@ -1,4 +1,4 @@
-pragma circom 2.1.7;
+pragma circom 2.2.2;
 
 include "comparators/IsEqual.circom";
 

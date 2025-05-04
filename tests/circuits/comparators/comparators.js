@@ -10,164 +10,162 @@ const wasm_tester = require("circom_tester").wasm;
 
 const assert = chai.assert;
 
-describe("comparators test", function ()  {
+describe("comparators test", function () {
     this.timeout(100000);
 
     it("compilation tests", async() => {
         let files = [
-            "GreaterThan_252.circom",
-            "IsEqual.circom",
-            "IsNotEqual.circom",
-            "LessEqThan_252.circom",
-            "LessThan_252.circom", 
             "ToLessThanConstant_10.circom",
         ];
         for(let fileIdx in files) {
             const _ = await wasm_tester(
                 path.join(__dirname, files[fileIdx]),
-                { 
+                {
+                    "prime": "bn128",
                     "include": [ path.join(__dirname, "../../../src/circuits/") ],
                 },
             );
         }
     });
 
-    it("LessThan_2 soundness breaks for (0, p-2)", async() => {
-        const circuit = await wasm_tester(
+    it("basic viability tests", async() => {
+        const lt = await wasm_tester(
             path.join(__dirname, "LessThan_2.circom"),
             {
+                "prime": "bn128",
                 "include": [ path.join(__dirname, "../../../src/circuits/") ],
             },
         );
 
-        let witness = await circuit.calculateWitness({ "lhs": 0, "rhs": Fr.e("-2") }, true);
-        // console.log(witness);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 0 });
-    });
-
-    // Really bad because there may be a lot of code that calls LessThan(32)(x, 2^{31})
-    it("LessThan_2to32 soundness breaks for (p-(2^31), 2^31)", async() => {
-        const circuit = await wasm_tester(
-            path.join(__dirname, "LessThan_2to32.circom"),
+        const le = await wasm_tester(
+            path.join(__dirname, "LessEqThan_2.circom"),
             {
+                "prime": "bn128",
                 "include": [ path.join(__dirname, "../../../src/circuits/") ],
             },
         );
 
-        let witness = await circuit.calculateWitness({
-            "lhs": Fr.e("-2147483648"),
-            "rhs": Fr.e("2147483648")
-        }, true);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 1 });
-    });
-
-    it("LessThan_2 soundness breaks for (p-2, 0)", async() => {
-        const circuit = await wasm_tester(
-            path.join(__dirname, "LessThan_2.circom"),
+        const gt = await wasm_tester(
+            path.join(__dirname, "GreaterThan_2.circom"),
             {
+                "prime": "bn128",
                 "include": [ path.join(__dirname, "../../../src/circuits/") ],
             },
         );
 
-        let witness = await circuit.calculateWitness({ "lhs": Fr.e("-2"), "rhs": 0 }, true);
-        // console.log(witness);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 1 });
-    });
-
-    it("LessThan_2 soundness breaks for (p-2, 1)", async() => {
-        const circuit = await wasm_tester(
-            path.join(__dirname, "LessThan_2.circom"),
+        const eq = await wasm_tester(
+            path.join(__dirname, "IsEqual.circom"),
             {
+                "prime": "bn128",
                 "include": [ path.join(__dirname, "../../../src/circuits/") ],
             },
         );
 
-        let witness = await circuit.calculateWitness({ "lhs": Fr.e("-2"), "rhs": 2 }, true);
-        // console.log(witness);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 1 });
-    });
-
-    it("LessThan_2 soundness breaks for (p-2, 2)", async() => {
-        const circuit = await wasm_tester(
-            path.join(__dirname, "LessThan_2.circom"),
+        const neq = await wasm_tester(
+            path.join(__dirname, "IsNotEqual.circom"),
             {
+                "prime": "bn128",
                 "include": [ path.join(__dirname, "../../../src/circuits/") ],
             },
         );
 
-        let witness = await circuit.calculateWitness({ "lhs": Fr.e("-2"), "rhs": 2 }, true);
-        // console.log(witness);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 1 });
-    });
-
-    it("LessThan_2 tests", async() => {
-        const circuit = await wasm_tester(
-            path.join(__dirname, "LessThan_2.circom"),
-            { 
+        const isnz = await wasm_tester(
+            path.join(__dirname, "IsNonZero.circom"),
+            {
+                "prime": "bn128",
+                "include": [ path.join(__dirname, "../../../src/circuits/") ],
+            },
+        );
+        
+        const isz = await wasm_tester(
+            path.join(__dirname, "IsZero.circom"),
+            {
+                "prime": "bn128",
                 "include": [ path.join(__dirname, "../../../src/circuits/") ],
             },
         );
 
         async function assertLessThan(i, j, isLessThan) {
-            //console.log("LessThan(", i, ",", j, ")");
+            // console.log("LessThan(", i, ",", j, ")");
 
-            let witness = await circuit.calculateWitness({ "lhs": i, "rhs": j }, true);
-            await circuit.checkConstraints(witness);
-            await circuit.assertOut(witness, { out: isLessThan });
+            let witness = await lt.calculateWitness({ "lhs": i, "rhs": j }, true);
+            await lt.checkConstraints(witness);
+            // witness[0] is always set to 1 by convention
+            //assert(Fr.eq(Fr.e(witness[0]), Fr.e(1)));
+            // witness[1] is the value of the main output signal of the circuit
+            //assert(Fr.eq(Fr.e(witness[1]), Fr.e(0)), "111 != 222");
+            await lt.assertOut(witness, { out: isLessThan ? 1 : 0 });
         }
+
+        async function assertLessEqThan(i, j, isLessEqThan) {
+            // console.log("LessEqThan(", i, ",", j, ")");
+
+            let witness = await le.calculateWitness({ "lhs": i, "rhs": j }, true);
+            await le.checkConstraints(witness);
+            await le.assertOut(witness, { out: isLessEqThan ? 1 : 0 });
+        }
+
+        async function assertGreaterThan(i, j, isGreaterThan) {
+            // console.log("GreaterThan(", i, ",", j, ")");
+
+            let witness = await gt.calculateWitness({ "lhs": i, "rhs": j }, true);
+            await gt.checkConstraints(witness);
+            await gt.assertOut(witness, { out: isGreaterThan ? 1 : 0});
+        }
+
+        async function assertIsEqual(i, j, isEq) {
+            // console.log("IsEqual(", i, ",", j, ")");
+
+            let witness = await eq.calculateWitness({ "lhs": i, "rhs": j }, true);
+            await eq.checkConstraints(witness);
+            await eq.assertOut(witness, { out: isEq ? 1 : 0 });
+        }
+
+        async function assertIsNotEqual(i, j, isNeq) {
+            // console.log("IsNotEqual(", i, ",", j, ")");
+
+            let witness = await neq.calculateWitness({ "lhs": i, "rhs": j }, true);
+            await neq.checkConstraints(witness);
+            await neq.assertOut(witness, { out: isNeq ? 1 : 0 });
+        }
+
+        async function assertIsZero(i, isZero) {
+            // console.log("IsZero(", i, ")");
+
+            let witness = await isz.calculateWitness({ "in": i }, true);
+            await isz.checkConstraints(witness);
+            await isz.assertOut(witness, { out: isZero ? 1 : 0 });
+        }
+
+        async function assertIsNonZero(i, isNz) {
+            // console.log("IsNonZero(", i, ")");
+
+            let witness = await isnz.calculateWitness({ "in": i }, true);
+            await isnz.checkConstraints(witness);
+            await isnz.assertOut(witness, { out: isNz ? 1 : 0 });
+        }
+
+        // test p-1
+        await assertIsZero(Fr.e("-1"), 0);
+        await assertIsNonZero(Fr.e("-1"), 1);
 
         for(var i = 0; i < 4; i++) {
-            await assertLessThan(i, i, 0);
+            for(var j = 0; j < 4; j++) {
+                await assertIsZero(i, i == 0);
+                await assertIsNonZero(i, i != 0);
 
-            for(var j = i+1; j < 4; j++) {
-                await assertLessThan(i, j, 1);
-                await assertLessThan(j, i, 0);
+                await assertLessThan(i, j, i < j);
+                await assertLessThan(j, i, j < i);
+
+                await assertLessEqThan(i, j, i <= j);
+                await assertLessEqThan(j, i, j <= i);
+
+                await assertGreaterThan(i, j, i > j);
+                await assertGreaterThan(j, i, j > i);
+
+                await assertIsEqual(i, j, i == j);
+                await assertIsNotEqual(i, j, i != j);
             }
         }
-    });
-
-    it("IsEqual tests", async() => {
-        const circuit = await wasm_tester(
-            path.join(__dirname, "IsEqual.circom"),
-            { 
-                "include": [ path.join(__dirname, "../../../src/circuits/") ],
-            },
-        );
-
-        // TODO: are_equal_test_cases and are_not_equal_test_cases
-        // run all of them on both templates and make sure the templates contradict each other
-
-        let witness = await circuit.calculateWitness({ "lhs": 111, "rhs": 222 }, true);
-        // witness[0] is always set to 1 by convention
-        //assert(Fr.eq(Fr.e(witness[0]), Fr.e(1)));
-        // witness[1] is the value of the main output signal of the circuit
-        //assert(Fr.eq(Fr.e(witness[1]), Fr.e(0)), "111 != 222");
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 0 });
-
-        witness = await circuit.calculateWitness({ "lhs": 444, "rhs": 444 }, true);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 1 });
-
-        witness = await circuit.calculateWitness({ "lhs": 0, "rhs": 0 }, true);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 1 });
-
-        witness = await circuit.calculateWitness({ "lhs": 1, "rhs": 1 }, true);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 1 });
-
-        witness = await circuit.calculateWitness({ "lhs": 0, "rhs": 1 }, true);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 0 });
-
-        witness = await circuit.calculateWitness({ "lhs": 1, "rhs": 0 }, true);
-        await circuit.checkConstraints(witness);
-        await circuit.assertOut(witness, { out: 0 });
     });
 });

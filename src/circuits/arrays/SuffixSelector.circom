@@ -3,7 +3,8 @@
  */
 pragma circom 2.2.2;
 
-include "IndexSelectorUnsafe.circom";
+include "comparators/IsEqual.circom";
+include "IndexSelector.circom";
 
 // Returns a selector/mask that is 1 at [idx + 1, N) and zero everywhere else.
 // (Negation of PrefixSelector.)
@@ -15,20 +16,40 @@ include "IndexSelectorUnsafe.circom";
 // @output selector the selector mask
 //
 // @examples
-//   SuffixSelector(4)(0) --> 1111
-//   SuffixSelector(4)(1) --> 0111
-//   SuffixSelector(4)(2) --> 0011
-//   SuffixSelector(4)(3) --> 0001
-//   SuffixSelector(4)(4) --> 0000
-//   SuffixSelector(4)(idx) is not satisifiable when idx > N
+//   SuffixSelector(4)(0)   --> 1111
+//   SuffixSelector(4)(1)   --> 0111
+//   SuffixSelector(4)(2)   --> 0011
+//   SuffixSelector(4)(3)   --> 0001
+//   SuffixSelector(4)(4)   --> 0000
+//   SuffixSelector(4)(idx) --> unsatisfiable, \forall idx > 4; plus, compile-time checks
+//     will prevent such a call
 template SuffixSelector(N) {
     signal input {maxvalue} idx;
     signal output {binary} selector[N];
 
-    // Note: we allow idx = N
+    // Note: we allow idx == N
     assert(idx.maxvalue <= N);
 
-    signal idxSelector[N] <== IndexSelectorUnsafe(N)(idx);
+    // Will be 0 everywhere except at idx, when idx < N
+    signal idxSelector[N];
+    
+    // We use custom index selection logic here, since we want to allow for idx == N
+    signal success;
+    var sum = 0;
+    for (var i = 0; i < N; i++) {
+        idxSelector[i] <-- (idx == i) ? 1 : 0;
+        // C1: Enforces that idxSelector[i] == 0, \forall i != idx
+        idxSelector[i] * (idx - i) === 0;
+        sum += idxSelector[i];
+    }
+    success <== sum;
+
+    // If idx == N, we require that idxSelector[i] == 0, \forall i.
+    //
+    // Otherwise, if idx != N (<=> if idx < N, b.c. of the {maxvalue} tag), we
+    //   require that idxSelector[idx] == 1.
+    signal idxIsN <== IsEqual()(idx, N);
+    success === 1 - idxIsN;
 
     selector[0] <== idxSelector[0];
     for(var i = 1; i < N; i++) {

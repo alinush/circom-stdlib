@@ -15,16 +15,19 @@ describe("strings test", function ()  {
 
     it("compilation tests", async() => {
         let files = [
-            "ToString.circom",
-            "IsConcatenationInternal.circom",
+            "ToString_10.circom",
+            "IsConcatenationInternal_16_10_10.circom",
         ];
         for(let fileIdx in files) {
             const _ = await wasm_tester(
                 path.join(__dirname, files[fileIdx]),
-                { 
+                {
+                    "prime": "bn128",
                     "include": [ path.join(__dirname, "../../../src/circuits/") ],
                 },
             );
         }
     });
+
+    
 });

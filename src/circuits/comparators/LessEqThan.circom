@@ -8,6 +8,9 @@ include "../gates/NOT.circom";
 
 /**
  * Like LessThan(), except for the `<=` operator (not for `<`).
+ *
+ * TODO(Perf): Consider adopting the +1 trick from circomlib after understanding
+ * its soundness better.
  */
 template LessEqThan() {
     signal input {maxbits} lhs;

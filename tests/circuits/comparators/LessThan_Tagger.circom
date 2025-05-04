@@ -4,7 +4,7 @@ include "bits/ToMaxBits.circom";
 include "bits/AssertHasBinaryTag.circom";
 include "comparators/LessThan.circom";
 
-template LessThan_tagger(N) {
+template LessThan_Tagger(N) {
     signal input lhs, rhs;
 
     signal lhs_tagged <== ToMaxBits(N)(lhs);

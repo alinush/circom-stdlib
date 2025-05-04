@@ -36,22 +36,26 @@ include "../comparators/IsZero.circom";
 //
 // @param   MAX_LEN  the maximum length of the array
 //
-// @input   idx   the location to index into the array at and fetch the element
-// @input   arr   the array to fetch from
+// @input   idx {maxvalue}  the location to index into the array at and 
+//                          fetch the element
 //
-// @output  out   arr[idx]
+// @input   arr[MAX_LEN]    the array to fetch from
 //
-// @preconditions  idx.maxvalue < MAX_LEN
+// @output  out             arr[idx]
+//
+// @preconditions
+//      idx < MAX_LEN
 //
 // @benchmarks
 //   ArrayGet(MAX_LEN): 3*MAX_LEN + 3 vars, 2*MAX_LEN + 2 constraints
 //   ArrayGet_100.circom: 303 vars, 202 constraints
 //   ArrayGet_200.circom: 603 vars, 402 constraints
 template ArrayGet(MAX_LEN) {
-    assert(MAX_LEN > 0);
-
     signal input arr[MAX_LEN];
     signal input {maxvalue} idx;
+
+    assert(MAX_LEN > 0);
+    assert(idx.maxvalue < MAX_LEN);
 
     signal mask[MAX_LEN] <== IndexSelector(MAX_LEN)(idx);
 

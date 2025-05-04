@@ -16,7 +16,8 @@ describe("DivRem test", function ()  {
     it("basic viability test", async() => {
         const circuit = await wasm_tester(
             path.join(__dirname, "DivRem_64_64.circom"),
-            { 
+            {
+                "prime": "bn128",
                 "include": [ path.join(__dirname, "../../../src/circuits/") ],
             },
         );
