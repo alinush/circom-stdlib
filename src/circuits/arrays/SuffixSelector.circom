@@ -37,6 +37,11 @@ include "IndexSelector.circom";
  *   SuffixSelector(N): 2*N + 4 constraints, 2*N + 5 vars
  *   SuffixSelector_10_no_tags.circom: 24 constraints, 25 vars
  *   SuffixSelector_20_no_tags.circom: 44 constraints, 45 vars
+ *
+ * @notes
+ *   unsatisfiable for idx > 4 because C1 enforces idxSelector[i] == 0, \forall i
+ *   \in [0, N) while C2 will try to enforce their sum be equal to 1 (note that 
+ *   idxIsN will be 0)
  */
 template SuffixSelector(N) {
     signal input {maxvalue} idx;
@@ -47,7 +52,7 @@ template SuffixSelector(N) {
 
     // Will be 0 everywhere except at idx, when idx < N
     signal idxSelector[N];
-    
+
     // We use custom index selection logic here, since we want to allow for idx == N
     signal success;
     var sum = 0;

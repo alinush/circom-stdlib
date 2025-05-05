@@ -31,18 +31,42 @@ include "SuffixSelector.circom";
  *   PrefixSelector(4)(4) --> 1111
  *   PrefixSelector(4)(idx) --> unsatisfiable, \forall idx > 4; plus, compile-time checks
  *     will prevent such a call
+ * 
+ * @notes
+ *   unsatisfiable for idx > 4 because C1 enforces idxSelectorNeg[i] == 0, \forall i
+ *   \in [0, N) while C2 will try to enforce their sum be equal to -1 (note that 
+ *   idxIsN will be 0)
  */
 template PrefixSelector(N) {
     signal input {maxvalue} idx;
     signal output {binary} selector[N];
 
-    // Note: we allow idx = N
+    // Note: we allow idx == N
     assert(idx.maxvalue <= N);
 
-    // TODO: Do better than inverting the suffix mask
-    // (benchmarked this and it adds another N variables and N constraints)
-    signal suffixSelector[N] <== SuffixSelector(N)(idx);
-    for(var i = 0; i < N; i++) {
-        selector[i] <== 1 - suffixSelector[i];
+    // Will be 0 everywhere except at idx, where it will be -1, when idx < N
+    signal idxSelectorNeg[N];
+
+    // We use custom index selection logic here, since we want to allow for idx == N
+    signal success;
+    var sum = 0;
+    for (var i = 0; i < N; i++) {
+        idxSelectorNeg[i] <-- (idx == i) ? -1 : 0;
+        // C1: Enforces that idxSelectorNeg[i] == 0, \forall i != idx
+        idxSelectorNeg[i] * (idx - i) === 0;
+        sum += idxSelectorNeg[i];
+    }
+    success <== sum;
+
+    // If idx == N, we require that idxSelectorNeg[i] == 0, \forall i.
+    //
+    // Otherwise, if idx != N (<=> if idx < N, b.c. of the {maxvalue} tag), we
+    //   require that idxSelectorNeg[idx] == -1.
+    signal idxIsN <== IsEqual()(idx, N);
+    success === -1 + idxIsN;
+
+    selector[0] <== 1 + idxSelectorNeg[0];
+    for(var i = 1; i < N; i++) {
+        selector[i] <== selector[i - 1] + idxSelectorNeg[i];
     }
 }

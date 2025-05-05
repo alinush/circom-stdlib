@@ -11,7 +11,7 @@ const wasm_tester = require("circom_tester").wasm;
 const assert = chai.assert;
 const expect = chai.expect;
 
-describe("arrays test", function ()  {
+describe("IndexSelector test", function ()  {
     this.timeout(100000);
 
     it("IndexSelector_4 in-range", async() => {
@@ -58,7 +58,7 @@ describe("arrays test", function ()  {
             expect.fail("Expected to throw due to idx being too large, but it didn't");
         } catch (err) {
             expect(err.message).to.include("Error: Assert Failed");
-            expect(err.message).to.include("Error in template IndexSelector_0 line");
+            expect(err.message).to.include("Error in template IndexSelectorInternal_0 line");
         }
 
         // Tests that makes sure that the idx is at the correct location

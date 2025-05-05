@@ -6,6 +6,7 @@ pragma circom 2.2.2;
 // TODO: Add more
 //   IndexSelectorNegated
 //   SliceSelector
+include "internal/IndexSelectorInternal.circom";
 
 /**
  * Returns a "one-hot" selector/mask that is 1 at idx and zero everywhere else.
@@ -34,25 +35,15 @@ pragma circom 2.2.2;
  *   IndexSelector(N): N + 1 constraints, N + 2 vars
  *   IndexSelector_10_no_tags.circom: 11 constraints, 12 vars
  *   IndexSelector_20_no_tags.circom: 21 constraints, 22 vars
+ *
+ * @notes
+ *   unsatisfiable for idx >= N because IndexSelectorInternal enforces
+*    selector[i] == 0, \forall i \in [0, N), but also requires their sum be equal to 1
  */
 template IndexSelector(N) {
     signal input {maxvalue} idx;
-    signal output {binary} selector[N];
-    signal success;
 
     assert(idx.maxvalue < N);
 
-    var sum = 0;
-    for (var i = 0; i < N; i++) {
-        selector[i] <-- (idx == i) ? 1 : 0;
-        // C1: Enforces that selector[i] == 0, \forall i != idx
-        selector[i] * (idx - i) === 0;
-        sum += selector[i];
-    }
-    success <== sum;
-
-    // C2: Enforces that selector[idx] == 1 when idx \in [0, N). Otherwise, there is
-    // no selector[idx] to speak of.
-    // Note: Without this check, *any* value could be plugged in for selector[idx].
-    success === 1;
+    signal output {binary} selector[N] <== IndexSelectorInternal(N, 1)(idx);
 }

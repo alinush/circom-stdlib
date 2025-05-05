@@ -36,7 +36,7 @@ describe("arrays benches", function ()  {
             );
             
             await circuit.loadConstraints();
-            console.log("%s: %d constraints, %d vars", files[fileIdx], circuit.constraints.length, circuit.nVars);
+            // console.log("%s: %d constraints, %d vars", files[fileIdx], circuit.constraints.length, circuit.nVars);
             // console.log();
         }
     });
